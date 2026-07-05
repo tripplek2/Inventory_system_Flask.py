@@ -3,13 +3,17 @@ import requests
 BASE_URL = "https://world.openfoodfacts.org/api/v0/product"
 SEARCH_URL = "https://world.openfoodfacts.org/cgi/search.pl"
 
+HEADERS = {
+    "User-Agent": "InventoryFlaskApp/1.0 (student project; contact: example@example.com)"
+}
+
 def get_product_by_barcode(barcode):
     """Fetch product details from OpenFoodFacts using a barcode"""
 
     url = f"{BASE_URL}/{barcode}.json"
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=HEADERS)
 
         if response.status_code != 200:
             return None
@@ -45,12 +49,16 @@ def search_product_by_name(name):
     }
 
     try:
-            response = requests.get(SEARCH_URL, params=params)
+            response = requests.get(SEARCH_URL, params=params, headers=HEADERS,timeout=10)
+
+            print("Status:", response.status_code)
+            print("URL:", response.url)
 
             if response.status_code != 200:
                  return []
 
             data = response.json()
+            print(data.keys())
 
             if not data.get("products"):
                 return []

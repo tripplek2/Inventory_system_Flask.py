@@ -5,23 +5,25 @@ BASE_URL = "http://127.0.0.1:5000"
 def view_inventory():
     response = requests.get(f"{BASE_URL}/inventory")
 
-    if response.status_code == 200:
-        data = response.json()
+    if response.status_code != 200:
+        print("Failed to retrieve inventory.")
+        return
+    data = response.json()
 
-        print("\n===INVENTORY ===")
-        print("-" * 40)
+    print("\n===INVENTORY ===")
+    print("-" * 40)
 
-        if data["count"] == 0:
+    if data["count"] == 0:
             print("Inventory is empty.")
             return
         
-        for item in data["inventory"]:
+    for item in data["inventory"]:
             print(f"ID: {item['id']}")
             print(f"Product: {item['product_name']}")
             print(f"Price: {item['price']}")
             print(f"Stock: {item['stock']}")
             print("-" * 40)
-        print("Failed to retrieve inventory.")
+    print("Failed to retrieve inventory.")
 
 
 def view_product():
