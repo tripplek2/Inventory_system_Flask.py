@@ -41,7 +41,7 @@ class InventoryManager:
         """Update an existing inventory item."""
         item = self.get_item(item_id)
 
-        if not item:
+        if item is None:
             return None
         
         if "price" in data:
@@ -56,8 +56,25 @@ class InventoryManager:
         """Delete an inventory item."""
         item = self.get_item(item_id)
 
-        if not item:
+        if item is None:
             return False
         
         self.inventory.remove(item)
         return True
+    
+
+    def inventory_count(self):
+        """Return the number of items in inventory."""
+        return len(self.inventory)
+    
+    def clear_inventory(self):
+        """Remove all items from inventory."""
+        self.inventory.clear()
+        
+    def __repr__(self):
+        return (
+            f"InventoryItem("
+            f"id={self.id}, "
+            f"name='{self.product_name}', "
+            f"stock={self.stock})"
+        )
