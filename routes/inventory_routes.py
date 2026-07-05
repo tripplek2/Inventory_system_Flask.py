@@ -1,6 +1,9 @@
 from flask import Blueprint, request
 from data.inventory import inventory_manager
-from services.openfoodfacts import get_product_by_barcode
+from services.openfoodfacts import (
+    get_product_by_barcode,
+    search_product_by_name
+)
 
 inventory_bp = Blueprint("inventory", __name__)
 
@@ -68,7 +71,7 @@ def update_inventory_item(item_id):
 
     item = inventory_manager.update_item(item_id, data)
 
-    if not item:
+    if item is None:
         return {
             "error": "Product not found."
         }, 404
@@ -78,9 +81,6 @@ def update_inventory_item(item_id):
         "product": item.to_dict()
     }, 200
 
-    return {
-        "error": "product not found"
-    }, 404
 
 @inventory_bp.route("/inventory/<int:item_id>", methods=["DELETE"])
 def delete_inventory_item(item_id):
@@ -107,6 +107,20 @@ def search_by_barcode(barcode):
         }, 404
     
     return product, 200
+
+@inventory_bp.route("/openfood/name/<name>", methods=["GET"])
+def search_by_name(name):
+    products = search_product_by_name(name)
+
+    if not products:
+        return {
+            "error": "No products found."
+        }, 404
+
+    return {
+        "count": len(products),
+        "products": products
+    }, 200
            
 
 
