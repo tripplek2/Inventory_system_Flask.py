@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "https://world.openfoodfacts.org/api/v0/product"
+BASE_URL = "http://127.0.0.1:5000"
 
 def view_inventory():
     response = requests.get(f"{BASE_URL}/inventory")
@@ -9,21 +9,18 @@ def view_inventory():
         data = response.json()
 
         print("\n===INVENTORY ===")
+        print("-" * 40)
 
         if data["count"] == 0:
             print("Inventory is empty.")
             return
         
         for item in data["inventory"]:
-            print(f"""
-ID: {item['id']}
-Product: {item['product_name']}
-Brand: {item['brand']}
-Price: {item['price']}
-Stock: {item['stock']}
--------------------------
-""")
-    else:
+            print(f"ID: {item['id']}")
+            print(f"Product: {item['product_name']}")
+            print(f"Price: {item['price']}")
+            print(f"Stock: {item['stock']}")
+            print("-" * 40)
         print("Failed to retrieve inventory.")
 
 
@@ -46,7 +43,7 @@ def view_product():
         print(f"Stock: {item['stock']}")
 
     else:
-        print(response.json()["error"])
+        print("Failed to retrieve inventory.")
 
 
 def add_product():
@@ -80,7 +77,7 @@ def update_product():
         data["price"] = float(price)
 
     if stock:
-        data["price"] = int(stock)
+        data["stock"] = int(stock)
 
     response = requests.patch(
         f"{BASE_URL}/inventory/{item_id}",
@@ -90,10 +87,10 @@ def update_product():
     if response.status_code == 200:
         print("\nProduct updated succesfully.")
     else:
-        print(response.json(["error"]))
+        print(response.json()["error"])
 
 def delete_product():
-    item_id = input("Enter product ID to delete")
+    item_id = input("Enter product ID to delete: ")
 
     response = requests.delete(f"{BASE_URL}/inventory/{item_id}")
 
@@ -102,3 +99,20 @@ def delete_product():
     else:
         print(response.json()["error"])
 
+def search_barcode():
+    barcode = input("Enter barcode: ")
+
+    response = requests.get(
+        f"{BASE_URL}/openfood/barcode/{barcode}"
+    )
+
+    print(response.json())
+
+def search_name():
+    name = input("Enter product name: ")
+
+    response = requests.get(
+        f"{BASE_URL}/openfood/name/{name}"
+    )
+
+    print(response.json())
