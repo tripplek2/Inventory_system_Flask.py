@@ -1,8 +1,4 @@
-from flask import requests
-from services.openfoodfacts import (
-    get_product_by_barcode,
-    search_product_by_name
-)
+import requests
 
 BASE_URL = "https://world.openfoodfacts.org/api/v0/product"
 
