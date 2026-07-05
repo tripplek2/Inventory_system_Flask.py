@@ -97,6 +97,18 @@ def delete_inventory_item(item_id):
             "eroor": "product not found."
         }, 404
 
+
+@inventory_bp.route("/openfood/barcode/<barcode>", methods=["GET"])
+def search_by_barcode(barcode):
+    product = get_product_by_barcode(barcode)
+
+    if not product:
+        return {
+            "error": "Product not found."
+            
+        }, 404
+    
+    return product, 200
            
 
 
