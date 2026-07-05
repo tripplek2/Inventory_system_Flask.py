@@ -83,6 +83,20 @@ def update_inventory_item(item_id):
         "error": "product not found"
     }, 404
 
+@inventory_bp.route("/inventory/<int:item_id>", methods=["DELETE"])
+def delete_inventory_item(item_id):
+    for item in inventory:
+        if item["id"] == item_id:
+            inventory.remove(item)
+
+            return {
+                "message": "Product deleted succesfully"
+            }, 200
+        
+        return {
+            "eroor": "product not found."
+        }, 404
+
            
 
 
