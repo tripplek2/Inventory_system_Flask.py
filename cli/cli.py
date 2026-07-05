@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "https://world.openfoodfacts.org/api/v0/product"
 
 def view_inventory():
     response = requests.get(f"{BASE_URL}/inventory")
@@ -47,3 +47,58 @@ def view_product():
 
     else:
         print(response.json()["error"])
+
+
+def add_product():
+    barcode = input("Enter barcode: ")
+    price = float(input("Enter price: "))
+    stock = int(input("Enter stock quantity: "))
+
+    data = {
+        "barcode": barcode,
+        "price": price,
+        "stock": stock
+    }
+
+    response = requests.post(f"{BASE_URL}/inventory", json=data)
+
+    if response.status_code == 201:
+        print("\nProduct added sucessfully.")
+    else:
+        print(response.json()["error"])
+
+
+def update_product():
+    item_id = input("Enter product ID: ")
+
+    price = input("New price (leave blank to skip): ")
+    stock = input("New stock (leave blank to skip): ")
+
+    data = {}
+
+    if price:
+        data["price"] = float(price)
+
+    if stock:
+        data["price"] = int(stock)
+
+    response = requests.patch(
+        f"{BASE_URL}/inventory/{item_id}",
+        json=data
+    )
+
+    if response.status_code == 200:
+        print("\nProduct updated succesfully.")
+    else:
+        print(response.json(["error"]))
+
+def delete_product():
+    item_id = input("Enter product ID to delete")
+
+    response = requests.delete(f"{BASE_URL}/inventory/{item_id}")
+
+    if response.status_code == 200:
+        print(response.json()["message"])
+    else:
+        print(response.json()["error"])
+
