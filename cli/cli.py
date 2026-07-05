@@ -116,3 +116,48 @@ def search_name():
     )
 
     print(response.json())
+
+def menu():
+    while True:
+        print("\n==== Inventory Management System ====")
+        print("1. View Inventory")
+        print("2. View Product")
+        print("3. Add Product")
+        print("4. Update Product")
+        print("5. Delete Product")
+        print("6. Search Product By Barcode")
+        print("7. Search Product by Name")
+        print("8. Exit")
+
+        choice = input("\nChoose an option: ")
+
+        if choice == "1":
+            view_inventory
+
+        elif choice == "2":
+            view_product()
+
+        elif choice == "3":
+            add_product()
+
+        elif choice == "4":
+            update_product()
+
+        elif choice == "5":
+            delete_product
+
+        elif choice == "6":
+            search_barcode()
+
+        elif choice == "7":
+            search_name
+
+        elif choice == "8":
+            print("\nGoodbye!")
+            break
+
+        else:
+            print("\nInvalid option. Please try again.")
+
+if __name__ == "__main__":
+    menu()
