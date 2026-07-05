@@ -1,25 +1,28 @@
 from flask import Blueprint, request
-from data.inventory import inventory
+from data.inventory import inventory_manager
 from services.openfoodfacts import get_product_by_barcode
 
 inventory_bp = Blueprint("inventory", __name__)
 
 @inventory_bp.route("/inventory", methods=["GET"])
 def get_inventory():
+    items = inventory_manager.get_all_items()
+
     return {
-        "count": len(inventory),
-        "inventory": inventory
+        "count": len(items),
+        "inventory": items
     }, 200
 
 @inventory_bp.route("/inventory/<int:item_id>", methods=["GET"])
 def get_inventory_item(item_id):
-    for item in inventory:
-        if item["id"] == item_id:
-            return item, 200
+    item = inventory_manager.get_item(item_id)
 
-    return {
+    if not item:
+        return {
         "error": "Product not found."
     }, 404
+
+    return item.to_dict(), 200
 
 
 @inventory_bp.route("/inventory", methods=["POST"])
@@ -42,18 +45,16 @@ def add_inventory_item():
             "error": "Product not found in OpenFoodFacts."
         }, 404
     
-    new_item = {
-        "id": len(inventory) + 1,**product,
-        "price": price,
-        "stock": stock
-    }
+    item = inventory_manager.add_item(
+    product,
+    price,
+    stock
+    )
 
-    inventory.append(new_item)
-        
     return {
-        "message": "product added succesfully.",
-        "product": new_item
-    }, 201
+    "message": "Product added successfully.",
+    "product": item.to_dict()
+}, 201
 
 
 @inventory_bp.route("/inventory/<int:item_id>", methods=["PATCH"])
@@ -65,19 +66,17 @@ def update_inventory_item(item_id):
         "error": "No data provided."
     }, 400
 
-    for item in inventory:
-        if item["id"] == item_id:
+    item = inventory_manager.update_item(item_id, data)
 
-            if "price" in data:
-                item["price"] = data["price"]
+    if not item:
+        return {
+            "error": "Product not found."
+        }, 404
 
-            if "stock" in data:
-                item["stock"] = data["stock"]
-
-            return {
-                "message": "product updated succesfully.",
-                "product": item
-            }, 200
+    return {
+        "message": "Product updated successfully.",
+        "product": item.to_dict()
+    }, 200
 
     return {
         "error": "product not found"
@@ -85,17 +84,16 @@ def update_inventory_item(item_id):
 
 @inventory_bp.route("/inventory/<int:item_id>", methods=["DELETE"])
 def delete_inventory_item(item_id):
-    for item in inventory:
-        if item["id"] == item_id:
-            inventory.remove(item)
-
-            return {
-                "message": "Product deleted succesfully"
-            }, 200
-        
+    deleted = inventory_manager.delete_item(item_id)
+    
+    if not deleted:
         return {
-            "eroor": "product not found."
+            "error": "Product not found."
         }, 404
+
+    return {
+        "message": "Product deleted successfully."
+    }, 200
 
 
 @inventory_bp.route("/openfood/barcode/<barcode>", methods=["GET"])
