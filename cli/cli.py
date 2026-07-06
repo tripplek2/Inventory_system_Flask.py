@@ -45,7 +45,7 @@ def view_product():
         print(f"Stock: {item['stock']}")
 
     else:
-        print("Failed to retrieve inventory.")
+        print(response.json()["error"])
 
 
 def add_product():
@@ -62,7 +62,7 @@ def add_product():
     response = requests.post(f"{BASE_URL}/inventory", json=data)
 
     if response.status_code == 201:
-        print("\nProduct added sucessfully.")
+        print("\nProduct added successfully.")
     else:
         print(response.json()["error"])
 
@@ -87,7 +87,7 @@ def update_product():
     )
 
     if response.status_code == 200:
-        print("\nProduct updated succesfully.")
+        print("\nProduct updated successfully.")
     else:
         print(response.json()["error"])
 
@@ -134,7 +134,7 @@ def menu():
         choice = input("\nChoose an option: ")
 
         if choice == "1":
-            view_inventory
+            view_inventory()
 
         elif choice == "2":
             view_product()
@@ -146,13 +146,13 @@ def menu():
             update_product()
 
         elif choice == "5":
-            delete_product
+            delete_product()
 
         elif choice == "6":
             search_barcode()
 
         elif choice == "7":
-            search_name
+            search_name()
 
         elif choice == "8":
             print("\nGoodbye!")
