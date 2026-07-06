@@ -106,11 +106,29 @@ def delete_product():
 def search_barcode():
     barcode = input("Enter barcode: ")
 
-    response = requests.get(
-        f"{BASE_URL}/openfood/barcode/{barcode}"
-    )
+    response = requests.get(f"{BASE_URL}/openfood/barcode/{barcode}")
 
-    print(response.json())
+    if response.status_code != 200:
+        try:
+            print(response.json().get("error", "Product not found."))
+        except Exception:
+            print("Product not found.")
+        return
+
+    product = response.json()
+    
+    print("\n===== PRODUCT FOUND =====")
+    print("-" * 40)
+
+    if product.get('barcode'):
+        print(f"Barcode : {product['barcode']}")
+    if product.get('product_name'):
+        print(f"Name    : {product['product_name']}")
+    if product.get('brand'):
+        print(f"Brand   : {product['brand']}")
+    if product.get('category'):
+        print(f"Category: {product['category']}")
+    print("-" * 40)
 
 def search_name():
     name = input("Enter product name: ")
