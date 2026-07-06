@@ -23,7 +23,7 @@ def view_inventory():
             print(f"Price: {item['price']}")
             print(f"Stock: {item['stock']}")
             print("-" * 40)
-    print("Failed to retrieve inventory.")
+    # print("Failed to retrieve inventory.")
 
 
 def view_product():
