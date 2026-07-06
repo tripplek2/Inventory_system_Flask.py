@@ -100,7 +100,7 @@ def delete_inventory_item(item_id):
 def search_by_barcode(barcode):
     product = get_product_by_barcode(barcode)
 
-    if not product:
+    if product is None:
         return {
             "error": "Product not found."
             
@@ -116,7 +116,7 @@ def search_by_name(name):
         return {
             "error": "No products found."
         }, 404
-
+    
     return {
         "count": len(products),
         "products": products
