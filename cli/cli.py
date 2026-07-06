@@ -8,7 +8,7 @@ def view_inventory():
     if response.status_code == 200:
         data = response.json()
 
-        print("\n===INVENTORY ===")
+        print("\n=====INVENTORY =====")
         print("-" * 40)
 
         if data["count"] == 0:
@@ -115,7 +115,28 @@ def search_name():
         f"{BASE_URL}/openfood/name/{name}"
     )
 
-    print(response.json())
+    if response.status_code != 200:
+        try:
+            print(response.json().get("error", "Failed to search product."))
+        except Exception:
+            print("Failed to search product.")
+        return
+
+    data = response.json()
+    
+    print("\n===== SEARCH RESULTS =====")
+    print("-" * 40)
+    
+    if not data.get("products") or data["count"] == 0:
+        print("No products found with that name.")
+        return
+
+    for product in data["products"]:
+        print(f"Barcode : {product.get('barcode', '')}")
+        print(f"Name    : {product.get('product_name', '')}")
+        print(f"Brand   : {product.get('brand', '')}")
+        print(f"Category: {product.get('category', '')}")
+        print("-" * 40)
 
 def menu():
     while True:
