@@ -61,8 +61,7 @@ Inventory_Flask.py/
 ├── tests/
 │   └── unit/
 │       └── test_inventory_manager.py
-│
-└── utils/
+
 ```
 
 ---
